@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/coursefeedback/db" VERSION="2025061700" COMMENT="Course Feedback Block">
+  <TABLES>
+    <TABLE NAME="block_coursefeedback" COMMENT="Stores course feedback from students">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Foreign key to mdl_user.id"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Foreign key to mdl_course.id"/>
+
+        <FIELD NAME="contentquality" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Rating 1-5"/>
+        <FIELD NAME="instructoreffectiveness" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Rating 1-5"/>
+        <FIELD NAME="coursematerials" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Rating 1-5"/>
+        <FIELD NAME="workloaddifficulty" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Rating 1-5"/>
+
+        <FIELD NAME="comments" TYPE="text"  NOTNULL="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true"/>
+      </FIELDS>
+
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid_fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="courseid_fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

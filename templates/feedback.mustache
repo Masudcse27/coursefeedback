@@ -1,0 +1,17 @@
+<table>
+<thead>
+<tr>
+<th>Course Name</th><th>Avg Rating</th><th>My Rating</th><th>Comments Given</th>
+</tr>
+</thead>
+<tbody>
+{{#courses}}
+<tr>
+<td>{{fullname}}</td>
+<td>{{avg}}</td>
+<td>{{my}}</td>
+<td>{{#comment}}Yes{{/comment}}{{^comment}}No{{/comment}}</td>
+</tr>
+{{/courses}}
+</tbody>
+</table>
