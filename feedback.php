@@ -9,16 +9,30 @@ global $DB, $USER;
 $courseid = required_param('courseid', PARAM_INT);
 
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-
 require_login($course);
 
 $context = context_course::instance($courseid);
+
+if (has_capability('block/coursefeedback:viewdashboard', $context)) {
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]),
+        get_string('nopermissiontoviewfeedback', 'block_coursefeedback'),
+        null,
+        \core\output\notification::NOTIFY_ERROR
+    );
+}
+
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/coursefeedback/feedback.php', ['courseid' => $courseid]);
 $PAGE->set_title('Give Course Feedback');
 $PAGE->set_heading('Give Course Feedback');
 
+$existing = $DB->get_record('block_coursefeedback', ['userid' => $USER->id, 'courseid' => $courseid]);
+
 $mform = new feedback_form(null, ['courseid' => $courseid]);
+
+if ($existing) {
+    $mform->set_data($existing);
+}
 
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
@@ -34,7 +48,13 @@ if ($mform->is_cancelled()) {
         'timemodified' => time()
     ];
 
-    $DB->insert_record('block_coursefeedback', $record);
+    if ($existing) {
+        $record->id = $existing->id;
+        $DB->update_record('block_coursefeedback', $record);
+    } else {
+        $DB->insert_record('block_coursefeedback', $record);
+    }
+
     redirect(new moodle_url('/course/view.php', ['id' => $courseid]), '✅ Feedback submitted!');
 }
 
