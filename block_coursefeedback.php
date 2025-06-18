@@ -9,27 +9,14 @@ class block_coursefeedback extends block_base
 
     private function render_star_rating($rating, $maxstars = 5, $size = 24)
     {
+        global $OUTPUT;
         $rating = max(0, min($rating, $maxstars));
         $percentage = ($rating / $maxstars) * 100;
 
-        return '
-        <div style="position: relative; display: inline-block; font-size: ' . $size . 'px; line-height: 1;">
-            <div style="color: lightgray; user-select:none;">
-                &#9733;&#9733;&#9733;&#9733;&#9733;
-            </div>
-            <div style="
-                color: gold;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: ' . $percentage . '%;
-                overflow: hidden;
-                white-space: nowrap;
-                user-select:none;
-            ">
-                &#9733;&#9733;&#9733;&#9733;&#9733;
-            </div>
-        </div>';
+        return $OUTPUT->render_from_template('block_coursefeedback/star_rating', [
+            'percentage' => $percentage,
+            'size' => $size
+        ]);
     }
 
     public function get_content()
@@ -44,7 +31,7 @@ class block_coursefeedback extends block_base
         $this->content = new stdClass();
 
         if (has_capability('block/coursefeedback:viewdashboard', $context)) {
-            
+
             $sql = "SELECT 
                         AVG(contentquality) AS avg_content,
                         AVG(instructoreffectiveness) AS avg_instructor,
@@ -65,10 +52,10 @@ class block_coursefeedback extends block_base
 
                 $stars = $this->render_star_rating($overall);
 
-                $this->content->text = "".$stars ."<br>" .
-                    "<strong>Average Ratings: ".number_format($overall, 2) . "</strong><br>".
-                    "Content Quality: " .$this->render_star_rating($averages->avg_content) . "<br>" .
-                    "Instructor Effectiveness: ".$this->render_star_rating($averages->avg_instructor) . "<br>" .
+                $this->content->text = "" . $stars . "<br>" .
+                    "<strong>Average Ratings: " . number_format($overall, 2) . "</strong><br>" .
+                    "Content Quality: " . $this->render_star_rating($averages->avg_content) . "<br>" .
+                    "Instructor Effectiveness: " . $this->render_star_rating($averages->avg_instructor) . "<br>" .
                     "Course Materials: " . $this->render_star_rating($averages->avg_materials) . "<br>" .
                     "Workload Difficulty: " . $this->render_star_rating($averages->avg_workload) . "<br><br>";
 
@@ -77,9 +64,7 @@ class block_coursefeedback extends block_base
             } else {
                 $this->content->text = "No feedback yet.<br><br>";
             }
-        }
-
-        if (has_capability('block/coursefeedback:givefeedback', $context)) {
+        } elseif (has_capability('block/coursefeedback:givefeedback', $context)) {
             $userfeedback = $DB->get_record('block_coursefeedback', [
                 'userid' => $USER->id,
                 'courseid' => $COURSE->id
@@ -94,10 +79,8 @@ class block_coursefeedback extends block_base
             }
 
             $url = new moodle_url('/blocks/coursefeedback/feedback.php', ['courseid' => $COURSE->id]);
-            $this->content->text .= html_writer::link($url, $userfeedback?get_string('change_feedback', 'block_coursefeedback'):get_string('givefeedback', 'block_coursefeedback'));
-        }
-
-        if (empty($this->content->text)) {
+            $this->content->text .= html_writer::link($url, $userfeedback ? get_string('change_feedback', 'block_coursefeedback') : get_string('givefeedback', 'block_coursefeedback'));
+        } else {
             $this->content->text = get_string('nocapability', 'block_coursefeedback');
         }
 
