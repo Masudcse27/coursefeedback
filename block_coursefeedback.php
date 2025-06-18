@@ -52,13 +52,16 @@ class block_coursefeedback extends block_base
 
                 $stars = $this->render_star_rating($overall);
 
-                $this->content->text = "" . $stars . "<br>" .
-                    "<strong>Average Ratings: " . number_format($overall, 2) . "</strong><br>" .
-                    "Content Quality: " . $this->render_star_rating($averages->avg_content) . "<br>" .
-                    "Instructor Effectiveness: " . $this->render_star_rating($averages->avg_instructor) . "<br>" .
-                    "Course Materials: " . $this->render_star_rating($averages->avg_materials) . "<br>" .
-                    "Workload Difficulty: " . $this->render_star_rating($averages->avg_workload) . "<br><br>";
-
+                $this->content->text = '
+                    <div style="text-align: center;">
+                        ' . $stars . '</div>
+                        <strong>All Average Ratings: ' . number_format($overall, 2) . '</strong><br>
+                        <div style="text-align: center;"><strong>Average Category Ratings</strong></div>
+                        Content Quality: ' . $this->render_star_rating($averages->avg_content) . '<br>
+                        Instructor Effectiveness: ' . $this->render_star_rating($averages->avg_instructor) . '<br>
+                        Course Materials: ' . $this->render_star_rating($averages->avg_materials) . '<br>
+                        Workload Difficulty: ' . $this->render_star_rating($averages->avg_workload) . '<br><br>
+                    ';
                 $url = new moodle_url('/blocks/coursefeedback/teacher_dashboard.php', ['courseid' => $COURSE->id]);
                 $this->content->text .= html_writer::link($url, get_string('viewdashboard', 'block_coursefeedback')) . "<br><br>";
             } else {
