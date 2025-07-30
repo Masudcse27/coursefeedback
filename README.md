@@ -48,7 +48,7 @@ Admins and teachers can view average feedback in block
 
 Admins and teachers can view The feedback list and export as a CSV file
 
-<img width="960" alt="View feedback list" src="https://github.com/Masudcse27/readme_images/blob/main/course_feedback/feedback_4.png">
+<img width="960" alt="View feedback list" src="https://github.com/Masudcse27/readme_images/blob/main/course_feedback/feedback_5.png">
 
 
 
